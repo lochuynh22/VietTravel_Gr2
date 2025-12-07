@@ -1,0 +1,555 @@
+{
+  "users": [
+    {
+      "id": "u-traveler",
+      "name": "Linh Tran",
+      "email": "linh@demo.com",
+      "password": "123456",
+      "role": "customer"
+    },
+    {
+      "id": "u-admin",
+      "name": "Admin Vietravel Asia",
+      "email": "admin@vietravelasia.com",
+      "password": "admin123",
+      "role": "admin"
+    }
+  ],
+  "tours": [
+    {
+      "id": "t-sapa-heritage",
+      "name": "Sapa Heritage Retreat 4N3Đ",
+      "slug": "sapa-heritage-retreat",
+      "destination": "Sa Pa",
+      "region": "Tây Bắc",
+      "price": 8200000,
+      "salePrice": 7590000,
+      "durationDays": 4,
+      "thumbnail": "https://images.unsplash.com/photo-1500375592092-40eb2168fd21?auto=format&fit=crop&w=900&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1474980468805-645cb11c4830?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80"
+      ],
+      "highlights": [
+        "Chinh phục Fansipan Legend bằng cáp treo",
+        "Check-in bản Cát Cát, trải nghiệm văn hóa H'Mông",
+        "Lưu trú resort 4* với view núi mây"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Hà Nội - Lào Cai - Sapa",
+          "description": "Đón khách tại Hà Nội, di chuyển cao tốc đến Lào Cai. Thăm bản Cát Cát và thưởng thức đặc sản địa phương."
+        },
+        {
+          "day": 2,
+          "title": "Fansipan Legend - Núi Hàm Rồng",
+          "description": "Chinh phục \"nóc nhà Đông Dương\" bằng tuyến cáp treo. Buổi chiều tham quan núi Hàm Rồng, săn mây tại Sân Mây."
+        },
+        {
+          "day": 3,
+          "title": "Y Tý săn mây - Thung lũng Mường Hoa",
+          "description": "Khởi hành đi Y Tý săn mây, trải nghiệm ruộng bậc thang ở Mường Hoa. Thưởng thức thắng cố và rượu táo mèo."
+        },
+        {
+          "day": 4,
+          "title": "Sapa - Hà Nội",
+          "description": "Tự do mua sắm chợ phiên Sapa, trả phòng và xe đưa đoàn về lại Hà Nội."
+        }
+      ],
+      "policies": {
+        "deposit": "Đặt cọc 50% giá tour khi xác nhận",
+        "cancellation": "Hoàn 80% trước 15 ngày, 50% trước 7 ngày, sau 3 ngày không hoàn",
+        "notes": "Giá đã bao gồm vé cáp treo Fansipan, bảo hiểm du lịch 100 triệu"
+      }
+    },
+    {
+      "id": "t-bali-symphony",
+      "name": "Bali Symphony nghỉ dưỡng 5N4Đ",
+      "slug": "bali-symphony",
+      "destination": "Bali",
+      "region": "Đông Nam Á",
+      "price": 18900000,
+      "salePrice": 17290000,
+      "durationDays": 5,
+      "thumbnail": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80",
+      "images": [
+        "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&q=80"
+      ],
+      "highlights": [
+        "Resort 5* bên bờ biển Seminyak",
+        "Đón bình minh đỉnh núi lửa Batur bằng jeep",
+        "Chụp ảnh cổng trời Lempuyang và ruộng bậc thang Tegalalang"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "TP.HCM - Bali - Seminyak",
+          "description": "Bay thẳng đến Bali, nhận phòng resort 5*, cocktail chào mừng và tiệc BBQ hải sản."
+        },
+        {
+          "day": 2,
+          "title": "Jeep tour núi lửa Batur",
+          "description": "Dậy sớm đón bình minh tại đỉnh Batur, thư giãn tại suối nước nóng Toya Devasya."
+        },
+        {
+          "day": 3,
+          "title": "Temple & Instagram tour",
+          "description": "Tham quan Lempuyang, Tirta Gangga, Swing Bali. Chụp ảnh chuyên nghiệp theo concept Vietravelasia."
+        },
+        {
+          "day": 4,
+          "title": "Tự do biển Nusa Dua",
+          "description": "Option chơi water sport hoặc spa Balinese. Chiều shopping tại Beachwalk."
+        },
+        {
+          "day": 5,
+          "title": "Bali - TP.HCM",
+          "description": "Check-out, ăn trưa Bebek Bengil và khởi hành về lại Việt Nam."
+        }
+      ],
+      "policies": {
+        "deposit": "Thanh toán đủ 100% trước ngày khởi hành 15 ngày",
+        "cancellation": "Hoàn 70% trước 20 ngày, 40% trước 10 ngày, sau 5 ngày không hoàn",
+        "notes": "Đã bao gồm vé máy bay khứ hồi, visa Indonesia on arrival"
+      }
+    },
+    {
+      "id": "t-japan-sakura",
+      "name": "Japan Sakura Signature 6N5Đ",
+      "slug": "japan-sakura-signature",
+      "destination": "Tokyo - Kyoto - Osaka",
+      "region": "Nhật Bản",
+      "price": 48900000,
+      "salePrice": 45900000,
+      "durationDays": 6,
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1cR7kIr2Xb7FUg1XX-XoVOr8NSukvdIIitw&s",
+      "images": [
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT1cR7kIr2Xb7FUg1XX-XoVOr8NSukvdIIitw&s",
+        "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=900&q=80",
+        "https://images.unsplash.com/photo-1480796927426-f609979314bd?auto=format&fit=crop&w=900&q=80"
+      ],
+      "highlights": [
+        "Trải nghiệm Shinkansen, ngắm hoa anh đào dọc kênh Meguro",
+        "Mặc kimono dạo phố cổ Gion, thưởng thức wagyu A5",
+        "Tham quan núi Phú Sĩ tầng 5 và làng Oshino Hakkai"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "TP.HCM - Tokyo",
+          "description": "Bay ANA tiêu chuẩn 23kg hành lý. Tham quan khu Shinjuku, check-in Hotel 4*."
+        },
+        {
+          "day": 2,
+          "title": "Tokyo city tour",
+          "description": "Viếng đền Asakusa, tản bộ kênh Meguro mùa sakura, mua sắm Ginza."
+        },
+        {
+          "day": 3,
+          "title": "Hakone - Núi Phú Sĩ",
+          "description": "Lên tầng 5 núi Phú Sĩ, du thuyền hồ Ashi và trải nghiệm onsen truyền thống."
+        },
+        {
+          "day": 4,
+          "title": "Kyoto - Nara",
+          "description": "Mặc kimono, chụp ảnh Fushimi Inari, ghé công viên Nara Deer Park."
+        },
+        {
+          "day": 5,
+          "title": "Osaka - Universal",
+          "description": "Vui chơi tại Universal Studios Japan hoặc tự do Dotonbori."
+        },
+        {
+          "day": 6,
+          "title": "Osaka - TP.HCM",
+          "description": "Mua sắm AEON Mall, bay về Việt Nam kết thúc hành trình."
+        }
+      ],
+      "policies": {
+        "deposit": "Đặt cọc 30 triệu ngay khi đăng ký",
+        "cancellation": "Hoàn 60% trước 30 ngày, 30% trước 15 ngày, sau 10 ngày không hoàn",
+        "notes": "Bao gồm visa Nhật, bảo hiểm du lịch 1 tỷ, HDV Vietravelasia"
+      }
+    },
+    {
+      "id": "8ccf",
+      "name": "Đà Lạt Chill Retreat 3N2Đ",
+      "destination": "Đà Lạt",
+      "region": "Tây Nguyên",
+      "price": 5200000,
+      "salePrice": 4690000,
+      "durationDays": 3,
+      "thumbnail": "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
+      "images": [
+        "https://images.unsplash.com/photo-1506744038136-46273834b3fb"
+      ],
+      "highlights": [
+        "Hồ Tuyền Lâm",
+        "Tham quan Đồi Thiên Phúc Đức – săn mây tuyệt đẹp",
+        "Dạo quanh Hồ Xuân Hương và chợ đêm Đà Lạt",
+        "Trải nghiệm giao lưu cồng chiêng Tây Nguyên",
+        "Ở resort bungalow gỗ view rừng cực đẹp"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "TP.HCM – Đà Lạt – Hồ Tuyền Lâm",
+          "description": "Khởi hành từ TP.HCM đến Đà Lạt. Tham quan Hồ Tuyền Lâm, đồi Thiên Phúc Đức. Tối ăn buffet rau chuẩn Đà Lạt."
+        },
+        {
+          "day": 2,
+          "title": "Check-in Đồi Thiên Phúc Đức – Làng Hoa Vạn Thành",
+          "description": "Sáng săn mây. Tham quan Làng Hoa Vạn Thành, Fresh Garden. Chiều tự do uống cà phê Mê Linh View. Tối giao lưu cồng chiêng.\""
+        },
+        {
+          "day": 3,
+          "title": "Chợ Đà Lạt – Hồ Xuân Hương – Trở về\"",
+          "description": "Tham quan chợ Đà Lạt mua đặc sản. Dạo Hồ Xuân Hương. Trả phòng và di chuyển về TP.HCM.\""
+        }
+      ],
+      "policies": {
+        "deposit": "Đặt cọc 40% giá tour khi đăng ký",
+        "cancellation": "Hoàn 80% trước 10 ngày, 50% trước 5 ngày, sau 3 ngày không hoàn",
+        "notes": "Giá bao gồm vé tham quan, xe đưa đón, hướng dẫn viên, 2 đêm khách sạn 3★ gần trung tâm"
+      },
+      "slug": "-lt-chill-retreat-3n2"
+    },
+    {
+      "id": "8496",
+      "name": "Hạ Long – Du Thuyền 5★ Paradise 2N1Đ",
+      "destination": "Hạ Long",
+      "region": "Miền Bắc",
+      "price": 6900000,
+      "salePrice": 6450000,
+      "durationDays": 2,
+      "thumbnail": "https://travelhalong.com.vn/UserFiles/images/Du%20thuy%E1%BB%81n%205%20sao/Paradise%20Grand/paradise%20grand.jpg",
+      "images": [
+        "https://vetauthamvinhhalong.com/wp-content/uploads/2023/07/51-720x540.jpg",
+        "https://owa.bestprice.vn/images/cruises/uploads/du-thuyen-paradise-delight-642bc86feb6a3.jpg"
+      ],
+      "highlights": [
+        "Lên du thuyền Paradise 5★ – thương hiệu cao cấp nhất Hạ Long",
+        "Kayak khám phá hang Luồn hoặc đi đò nan",
+        "Tham quan động Thiên Cung – một trong 10 hang động đẹp nhất thế giới",
+        "Tiệc trà chiều & ngắm hoàng hôn trên boong tàu",
+        "Ngủ đêm giữa vịnh – trải nghiệm sang trọng bậc nhất"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "Hà Nội – Tuần Châu – Du Thuyền Paradise 5★",
+          "description": "Khởi hành từ Hà Nội. Đến bến Tuần Châu làm thủ tục lên du thuyền Paradise. Thưởng thức buffet trưa khi thuyền bắt đầu rẽ sóng vào vùng lõi Di sản Vịnh Hạ Long. Chiều tham quan Hang Luồn bằng kayak hoặc đò nan. Tối tham gia lớp học nấu ăn, thưởng thức set menu sang trọng, câu mực đêm."
+        },
+        {
+          "day": 2,
+          "title": "Động Thiên Cung – Trả phòng – Hà Nội",
+          "description": "Thức dậy với buổi tập Tai Chi trên boong tàu. Dùng bữa sáng nhẹ trước khi tham quan Động Thiên Cung – kiệt tác thạch nhũ độc nhất của Hạ Long. Trả phòng, thưởng thức buffet trưa và quay về bến. Xe đưa đoàn trở lại Hà Nội."
+        }
+      ],
+      "policies": {
+        "deposit": "Đặt cọc 50% giá tour khi đăng ký.",
+        "cancellation": "Hoàn 70% trước 10 ngày; hoàn 40% trước 5 ngày; sau 3 ngày không hoàn.",
+        "notes": "Giá bao gồm: cabin du thuyền Paradise 5★, 3 bữa buffet, vé tham quan, kayak, HDV theo đoàn, bảo hiểm du lịch."
+      },
+      "slug": "h-long--du-thuyn-5-paradise-2n1"
+    },
+    {
+      "id": "6cfd",
+      "name": "Singapore Enjoy Trip 4N3Đ",
+      "destination": "Singapore",
+      "region": "Đông Nam Á",
+      "price": 15900000,
+      "salePrice": 14900000,
+      "durationDays": 4,
+      "thumbnail": "https://media.vietravel.com/images/Content/tour-du-lich-singapore-4n3d-lich-trinh-1-ngay-tu-tuc-diem-den-va-trai-nghiem-3.png",
+      "images": [
+        "https://etrip4utravel.s3-ap-southeast-1.amazonaws.com/images/article/2022/10/6dc6a1a6-8ce3-42e3-8d32-5bf22b2b5285.jpg",
+        "https://hanoitourist.vn/sites/default/files/inline-images/du-lich-singapore-tu-tuc.jpg"
+      ],
+      "highlights": [
+        "Khám phá Gardens by the Bay & Supertree Grove nổi tiếng",
+        "Trải nghiệm Sentosa – Universal Studios Singapore",
+        "Tham quan Merlion Park – biểu tượng quốc gia Singapore",
+        "Chụp ảnh Marina Bay Sands – khách sạn độc đáo hàng đầu thế giới"
+      ],
+      "itinerary": [
+        {
+          "day": 1,
+          "title": "TP.HCM – Singapore – Merlion Park – Chinatown",
+          "description": "Bay thẳng đến Singapore. Tham quan Merlion Park, Nhà hát Sầu Riêng Esplanade và Parliament House. Chiều dạo Chinatown và thưởng thức ẩm thực đường phố Michelin. Tối tham quan Clarke Quay."
+        },
+        {
+          "day": 2,
+          "title": "Gardens by the Bay – Marina Bay Sands – Spectra Show",
+          "description": "Sáng tham quan Gardens by the Bay với Flower Dome và Cloud Forest. Trưa mua sắm tại Marina Bay Sands Shoppes. Tối xem show nhạc nước Spectra Light & Water Show nổi tiếng."
+        },
+        {
+          "day": 3,
+          "title": "Sentosa – Universal Studios Singapore",
+          "description": "Khởi hành đến đảo Sentosa. Vui chơi tại Universal Studios Singapore với các trò chơi Transformers 4D, Mummy, Jurassic Park. Tối xem show Wings of Time."
+        },
+        {
+          "day": 4,
+          "title": "Bugis Street – Mua sắm – Trở về Việt Nam",
+          "description": "Tham quan Bugis Street, chợ địa phương lớn nhất Singapore. Mua sắm đặc sản và quà lưu niệm. Sau đó ra sân bay và trở về Việt Nam."
+        }
+      ],
+      "policies": {
+        "deposit": "Thanh toán 50% khi đăng ký, phần còn lại thanh toán trước ngày khởi hành 10 ngày.",
+        "cancellation": "Hoàn 80% trước 15 ngày; 50% trước 7 ngày; sau 5 ngày không hoàn.",
+        "notes": "Giá bao gồm vé máy bay khứ hồi, khách sạn 4★ trung tâm, vé Universal Studios, vé Gardens by the Bay, HDV theo đoàn."
+      },
+      "slug": "singapore-enjoy-trip-4n3"
+    }
+  ],
+  "schedules": [
+    {
+      "id": "s-sapa-1",
+      "tourId": "t-sapa-heritage",
+      "date": "2025-11-24",
+      "seatsTotal": 30,
+      "seatsAvailable": 20
+    },
+    {
+      "id": "s-sapa-2",
+      "tourId": "t-sapa-heritage",
+      "date": "2025-12-09",
+      "seatsTotal": 25,
+      "seatsAvailable": 17
+    },
+    {
+      "id": "s-sapa-3",
+      "tourId": "t-sapa-heritage",
+      "date": "2025-12-24",
+      "seatsTotal": 30,
+      "seatsAvailable": 25
+    },
+    {
+      "id": "s-bali-1",
+      "tourId": "t-bali-symphony",
+      "date": "2025-11-21",
+      "seatsTotal": 20,
+      "seatsAvailable": 9
+    },
+    {
+      "id": "s-bali-2",
+      "tourId": "t-bali-symphony",
+      "date": "2025-12-05",
+      "seatsTotal": 20,
+      "seatsAvailable": 10
+    },
+    {
+      "id": "s-bali-3",
+      "tourId": "t-bali-symphony",
+      "date": "2025-12-19",
+      "seatsTotal": 20,
+      "seatsAvailable": 16
+    },
+    {
+      "id": "s-japan-1",
+      "tourId": "t-japan-sakura",
+      "date": "2025-11-29",
+      "seatsTotal": 35,
+      "seatsAvailable": 15
+    },
+    {
+      "id": "s-japan-2",
+      "tourId": "t-japan-sakura",
+      "date": "2025-12-16",
+      "seatsTotal": 35,
+      "seatsAvailable": 26
+    },
+    {
+      "id": "s-japan-3",
+      "tourId": "t-japan-sakura",
+      "date": "2026-01-08",
+      "seatsTotal": 35,
+      "seatsAvailable": 30
+    },
+    {
+      "id": "s-1763127542176",
+      "tourId": "8ccf",
+      "date": "2025-11-19",
+      "seatsTotal": 31,
+      "seatsAvailable": 25
+    },
+    {
+      "id": "s-1763133597774",
+      "tourId": "8496",
+      "date": "2025-11-20",
+      "seatsTotal": 36,
+      "seatsAvailable": 24
+    },
+    {
+      "id": "s-1763134614151",
+      "tourId": "8496",
+      "date": "2025-11-14",
+      "seatsTotal": 20,
+      "seatsAvailable": 20
+    },
+    {
+      "id": "s-1763182772532",
+      "tourId": "6cfd",
+      "date": "2025-11-14",
+      "seatsTotal": 20,
+      "seatsAvailable": 20
+    },
+    {
+      "id": "s-1763182785315",
+      "tourId": "6cfd",
+      "date": "2025-11-16",
+      "seatsTotal": 36,
+      "seatsAvailable": 30
+    }
+  ],
+  "bookings": [
+    {
+      "id": "b-001",
+      "tourId": "t-sapa-heritage",
+      "scheduleId": "s-sapa-1",
+      "userId": "u-traveler",
+      "travelers": 2,
+      "startDate": "2025-11-24",
+      "totalAmount": 15180000,
+      "status": "cancelled",
+      "note": "",
+      "contact": {
+        "fullName": "Linh Tran",
+        "email": "linh@demo.com",
+        "phone": "0901234567"
+      },
+      "createdAt": "2025-11-09T00:00:00.000Z",
+      "updatedAt": "2025-11-15T07:31:24.737Z"
+    },
+    {
+      "id": "b-002",
+      "tourId": "t-bali-symphony",
+      "scheduleId": "s-bali-1",
+      "userId": "u-traveler",
+      "travelers": 4,
+      "startDate": "2025-11-21",
+      "totalAmount": 69160000,
+      "status": "cancelled",
+      "note": "",
+      "contact": {
+        "fullName": "Linh Tran",
+        "email": "linh@demo.com",
+        "phone": "0901234567"
+      },
+      "createdAt": "2025-11-12T00:00:00.000Z",
+      "updatedAt": "2025-11-14T15:39:08.790Z"
+    },
+    {
+      "id": "b-1763127651832",
+      "tourId": "8ccf",
+      "scheduleId": "s-1763127542176",
+      "userId": "u-traveler",
+      "travelers": 6,
+      "startDate": "2025-11-19",
+      "contact": {
+        "fullName": "Linh Tran",
+        "email": "linh@demo.com",
+        "phone": "0975126512"
+      },
+      "totalAmount": 28140000,
+      "status": "confirmed",
+      "note": "",
+      "createdAt": "2025-11-14T13:40:51.832Z",
+      "updatedAt": "2025-11-14T13:44:15.637Z"
+    },
+    {
+      "id": "b-1763133654444",
+      "tourId": "8496",
+      "scheduleId": "s-1763133597774",
+      "userId": "u-traveler",
+      "travelers": 6,
+      "startDate": "2025-11-20",
+      "contact": {
+        "fullName": "Linh Tran",
+        "email": "linh@demo.com",
+        "phone": "021651561651"
+      },
+      "totalAmount": 38700000,
+      "status": "pending",
+      "note": "",
+      "createdAt": "2025-11-14T15:20:54.444Z",
+      "updatedAt": "2025-11-14T15:20:54.445Z"
+    },
+    {
+      "id": "b-1763181618341",
+      "tourId": "8496",
+      "scheduleId": "s-1763133597774",
+      "userId": "u-1763181040417",
+      "travelers": 6,
+      "startDate": "2025-11-20",
+      "contact": {
+        "fullName": "Phát Nguyễn",
+        "email": "phat@gmail.com",
+        "phone": "072417821"
+      },
+      "totalAmount": 38700000,
+      "status": "cancelled",
+      "note": "",
+      "createdAt": "2025-11-15T04:40:18.341Z",
+      "updatedAt": "2025-11-15T04:40:57.299Z"
+    },
+    {
+      "id": "b-1763182269849",
+      "tourId": "8496",
+      "scheduleId": "s-1763133597774",
+      "userId": "u-1763181040417",
+      "travelers": 6,
+      "startDate": "2025-11-20",
+      "contact": {
+        "fullName": "Phát Nguyễn",
+        "email": "phat@gmail.com",
+        "phone": "04721471244"
+      },
+      "totalAmount": 38700000,
+      "status": "cancelled",
+      "note": "",
+      "createdAt": "2025-11-15T04:51:09.849Z",
+      "updatedAt": "2025-11-15T04:51:40.225Z"
+    },
+    {
+      "id": "b-1763183146493",
+      "tourId": "6cfd",
+      "scheduleId": "s-1763182785315",
+      "userId": "u-1763181040417",
+      "travelers": 6,
+      "startDate": "2025-11-16",
+      "contact": {
+        "fullName": "Phát Nguyễn",
+        "email": "phat@gmail.com",
+        "phone": "08284791274"
+      },
+      "totalAmount": 89400000,
+      "status": "confirmed",
+      "note": "",
+      "createdAt": "2025-11-15T05:05:46.493Z",
+      "updatedAt": "2025-11-15T05:05:58.105Z"
+    },
+    {
+      "id": "b-1763191903687",
+      "tourId": "t-bali-symphony",
+      "scheduleId": "s-bali-2",
+      "userId": "u-admin",
+      "travelers": 2,
+      "startDate": "2025-12-05",
+      "contact": {
+        "fullName": "Admin Vietravel Asia",
+        "email": "admin@vietravelasia.com",
+        "phone": "0944495653"
+      },
+      "totalAmount": 34580000,
+      "status": "pending",
+      "note": "",
+      "createdAt": "2025-11-15T07:31:43.687Z",
+      "updatedAt": "2025-11-15T07:31:43.687Z"
+    }
+  ]
+}
