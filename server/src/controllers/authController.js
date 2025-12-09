@@ -2,7 +2,7 @@ import User from '../models/User.js';
 
 export const register = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password, role } = req.body;
 
         // Check if user exists
         const existingUser = await User.findOne({ email });
@@ -18,7 +18,7 @@ export const register = async (req, res) => {
             name,
             email,
             password,
-            role: 'customer',
+            role: role === 'admin' ? 'admin' : 'customer',
         });
 
         return res.status(201).json({
