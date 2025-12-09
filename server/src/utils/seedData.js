@@ -22,7 +22,7 @@ const seedData = async () => {
 
         console.log('Cleared existing data');
 
-        // Hash passwords
+        // Hash passwords+
         const hashedUserPassword = await bcrypt.hash('123456', 10);
         const hashedAdminPassword = await bcrypt.hash('admin123', 10);
 
