@@ -13,12 +13,15 @@ export const register = async (req, res) => {
             });
         }
 
+        // Determine role: mặc định là 'customer', nếu gửi 'admin' thì cho phép
+        const finalRole = role === 'admin' ? 'admin' : 'customer';
+
         // Create user
         const user = await User.create({
             name,
             email,
             password,
-            role: role === 'admin' ? 'admin' : 'customer',
+            role: finalRole,
         });
 
         return res.status(201).json({
