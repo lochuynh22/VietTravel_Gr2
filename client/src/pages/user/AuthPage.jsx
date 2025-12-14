@@ -16,10 +16,14 @@ const AuthPage = () => {
         password: '',
     });
     const [message, setMessage] = useState('');
+    const [errors, setErrors] = useState({});
 
     useEffect(() => {
         dispatch(clearError());
         setMessage('');
+        setErrors({});
+        // Clear form when switching modes
+        setForm({ name: '', email: '', password: '' });
     }, [dispatch, mode]);
 
     useEffect(() => {
@@ -42,9 +46,56 @@ const AuthPage = () => {
         );
     }
 
+    const validateForm = () => {
+        const newErrors = {};
+        
+        if (mode === 'register') {
+            if (!form.name || form.name.trim() === '') {
+                newErrors.name = 'Vui lòng nhập họ tên';
+            } else if (form.name.trim().length < 2) {
+                newErrors.name = 'Họ tên phải có ít nhất 2 ký tự';
+            }
+        }
+        
+        if (!form.email || form.email.trim() === '') {
+            newErrors.email = 'Vui lòng nhập email';
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+            newErrors.email = 'Email không hợp lệ';
+        }
+        
+        if (!form.password || form.password === '') {
+            newErrors.password = 'Vui lòng nhập mật khẩu';
+        } else if (form.password.length < 6) {
+            newErrors.password = 'Mật khẩu phải có ít nhất 6 ký tự';
+        }
+        
+        setErrors(newErrors);
+        return { isValid: Object.keys(newErrors).length === 0, errors: newErrors };
+    };
+
+    const handleChange = (key, value) => {
+        setForm((prev) => ({ ...prev, [key]: value }));
+        // Clear error when user starts typing
+        if (errors[key]) {
+            setErrors((prev) => ({ ...prev, [key]: '' }));
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage('');
+        setErrors({});
+        
+        // Validate form
+        const { isValid, errors: validationErrors } = validateForm();
+        if (!isValid) {
+            const firstError = Object.values(validationErrors)[0];
+            if (firstError) {
+                toast.error(firstError);
+            }
+            return;
+        }
+        
         try {
             if (mode === 'login') {
                 await dispatch(loginAccount({ email: form.email, password: form.password })).unwrap();
@@ -62,6 +113,7 @@ const AuthPage = () => {
                 toast.success(successMsg);
                 // Chuyển sang chế độ đăng nhập sau khi đăng ký thành công
                 setForm({ ...form, name: '', password: '' }); // Xóa name và password, giữ lại email
+                setErrors({});
                 setTimeout(() => setMode('login'), 1000);
             }
         } catch (err) {
@@ -89,34 +141,55 @@ const AuthPage = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {mode === 'register' && (
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Họ tên</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">
+                                Họ tên <span className="text-red-500">*</span>
+                            </label>
                             <input
-                                className="input-field"
+                                className={`input-field ${errors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
                                 value={form.name}
-                                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                                required
+                                onChange={(e) => handleChange('name', e.target.value)}
                             />
+                            {errors.name && (
+                                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                                    <span>⚠</span>
+                                    {errors.name}
+                                </p>
+                            )}
                         </div>
                     )}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Email <span className="text-red-500">*</span>
+                        </label>
                         <input
-                            className="input-field"
+                            className={`input-field ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
                             type="email"
                             value={form.email}
-                            onChange={(e) => setForm({ ...form, email: e.target.value })}
-                            required
+                            onChange={(e) => handleChange('email', e.target.value)}
                         />
+                        {errors.email && (
+                            <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                                <span>⚠</span>
+                                {errors.email}
+                            </p>
+                        )}
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Mật khẩu</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                            Mật khẩu <span className="text-red-500">*</span>
+                        </label>
                         <input
-                            className="input-field"
+                            className={`input-field ${errors.password ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
                             type="password"
                             value={form.password}
-                            onChange={(e) => setForm({ ...form, password: e.target.value })}
-                            required
+                            onChange={(e) => handleChange('password', e.target.value)}
                         />
+                        {errors.password && (
+                            <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                                <span>⚠</span>
+                                {errors.password}
+                            </p>
+                        )}
                     </div>
                     <button className="btn-primary w-full" disabled={isLoading}>
                         {isLoading ? 'Đang xử lý...' : mode === 'login' ? 'Đăng nhập' : 'Đăng ký'}
