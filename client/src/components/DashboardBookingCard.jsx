@@ -10,13 +10,23 @@ const statusColors = {
   cancelled: 'bg-red-100 text-red-800',
 };
 
+const formatDate = (value) => {
+  if (!value) return '';
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return value;
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = String(d.getFullYear()).slice(-2);
+  return `${day}/${month}/${year}`;
+};
+
 const DashboardBookingCard = ({ booking, onCancel }) => (
   <article className="card flex items-center justify-between">
     <div className="flex-1">
       <p className="text-primary-600 text-xs font-medium mb-1">{booking.tour?.destination}</p>
       <h4 className="text-lg font-semibold mb-2">{booking.tour?.name}</h4>
       <p className="text-gray-600 text-sm mb-2">
-        Khởi hành {booking.startDate} • {booking.travelers} khách
+        Khởi hành {formatDate(booking.startDate)} • {booking.travelers} khách
       </p>
       <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${statusColors[booking.status] || 'bg-gray-100 text-gray-800'}`}>
         {statusMap[booking.status] || booking.status}

@@ -1,8 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { registerAccount, loginAccount } from '../apis/authApi.js';
 
+// Normalize user object to ensure id field exists
+const normalizeUser = (user) => {
+    if (!user) return null;
+    // Ensure id field exists for backward compatibility
+    if (!user.id && user._id) {
+        user.id = user._id;
+    }
+    return user;
+};
+
+const storedUser = localStorage.getItem('currentAccount');
 const initialState = {
-    user: JSON.parse(localStorage.getItem('currentAccount')) || null,
+    user: storedUser ? normalizeUser(JSON.parse(storedUser)) : null,
     isLoading: false,
     isError: false,
     errorMessage: '',

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import DashboardBookingCard from '../../components/DashboardBookingCard.jsx';
 import { fetchBookings, cancelBooking } from '../../apis/bookingApi.js';
+import { clearBookings } from '../../slices/bookingSlice.js';
 
 const DashboardPage = () => {
   const dispatch = useDispatch();
@@ -13,9 +14,17 @@ const DashboardPage = () => {
 
   useEffect(() => {
     if (user) {
-      dispatch(fetchBookings({ userId: user.id }));
+      // Clear bookings cũ trước khi fetch bookings mới của user hiện tại
+      const userId = user.id || user._id;
+      if (userId) {
+        dispatch(clearBookings());
+        dispatch(fetchBookings({ userId }));
+      }
+    } else {
+      // Clear bookings khi không có user (đã logout hoặc chưa đăng nhập)
+      dispatch(clearBookings());
     }
-  }, [dispatch, user]);
+  }, [dispatch, user?.id || user?._id]); // Chỉ re-fetch khi user.id thay đổi
 
   if (!user) {
     return (
@@ -34,7 +43,8 @@ const DashboardPage = () => {
       const successMsg = 'Đã gửi yêu cầu hủy tour. Vietravelasia sẽ xác nhận.';
       setMessage(successMsg);
       toast.success(successMsg);
-      dispatch(fetchBookings({ userId: user.id }));
+      const userId = user.id || user._id;
+      dispatch(fetchBookings({ userId }));
     } catch (err) {
       const errorMsg = err.message || 'Không thể hủy.';
       setMessage(errorMsg);

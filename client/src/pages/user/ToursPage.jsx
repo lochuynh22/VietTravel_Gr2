@@ -70,9 +70,10 @@ const ToursPage = () => {
                 </div>
             ) : tours.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {tours.map((tour) => (
-                        <TourCard key={tour.id} tour={tour} />
-                    ))}
+                    {tours.map((tour) => {
+                        const tourId = tour.id || tour._id;
+                        return <TourCard key={tourId} tour={tour} />;
+                    })}
                 </div>
             ) : (
                 <div className="text-center py-12">

@@ -9,6 +9,17 @@ const BookingForm = ({ tour, onSuccess }) => {
   const { isLoading } = useSelector((state) => state.booking);
   const [message, setMessage] = useState('');
 
+  // Format date to dd/mm/yy
+  const formatDate = (value) => {
+    if (!value) return '';
+    const d = new Date(value);
+    if (Number.isNaN(d.getTime())) return value;
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = String(d.getFullYear()).slice(-2);
+    return `${day}/${month}/${year}`;
+  };
+
   // Filter out past schedules
   const getValidSchedules = () => {
     if (!tour?.schedules || tour.schedules.length === 0) return [];
@@ -151,7 +162,7 @@ const BookingForm = ({ tour, onSuccess }) => {
                 const scheduleId = schedule.id || schedule._id;
                 return (
                   <option key={scheduleId} value={scheduleId}>
-                    {schedule.date} • Còn {schedule.seatsAvailable} chỗ
+                    {formatDate(schedule.date)} • Còn {schedule.seatsAvailable} chỗ
                   </option>
                 );
               })}

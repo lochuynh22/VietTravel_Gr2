@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import { loginAccount, registerAccount } from '../../apis/authApi.js';
-import { clearError } from '../../slices/authSlice.js';
+import { clearError, logout } from '../../slices/authSlice.js';
 
 const AuthPage = () => {
     const navigate = useNavigate();
@@ -54,10 +54,15 @@ const AuthPage = () => {
                 setTimeout(() => navigate('/tours'), 1000);
             } else {
                 await dispatch(registerAccount({ name: form.name, email: form.email, password: form.password })).unwrap();
-                const successMsg = 'Đăng ký thành công!';
+                // Xóa user khỏi state và localStorage sau khi đăng ký để yêu cầu đăng nhập
+                dispatch(logout());
+                localStorage.removeItem('currentAccount');
+                const successMsg = 'Đăng ký thành công! Vui lòng đăng nhập.';
                 setMessage(successMsg);
                 toast.success(successMsg);
-                setTimeout(() => navigate('/tours'), 1000);
+                // Chuyển sang chế độ đăng nhập sau khi đăng ký thành công
+                setForm({ ...form, name: '', password: '' }); // Xóa name và password, giữ lại email
+                setTimeout(() => setMode('login'), 1000);
             }
         } catch (err) {
             // Error handled by message in useEffect

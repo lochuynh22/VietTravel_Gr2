@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 
-const TourCard = ({ tour }) => (
+const TourCard = ({ tour }) => {
+    const tourId = tour.id || tour._id;
+    return (
     <article className="card overflow-hidden hover:shadow-lg transition-shadow">
         <img
             src={tour.thumbnail || tour.images?.[0] || 'https://via.placeholder.com/400x250'}
@@ -29,13 +31,14 @@ const TourCard = ({ tour }) => (
                 </div>
                 <Link
                     className="text-primary-600 hover:text-primary-700 font-medium text-sm"
-                    to={`/tours/${tour.id}`}
+                    to={`/tours/${tourId}`}
                 >
                     Chi tiết →
                 </Link>
             </div>
         </div>
     </article>
-);
+    );
+};
 
 export default TourCard;

@@ -39,7 +39,8 @@ const AdminPage = () => {
     const [itineraryDay, setItineraryDay] = useState({ day: 1, title: '', description: '' });
     const [scheduleForm, setScheduleForm] = useState({
         tourId: '',
-        date: '',
+        date: '', // ISO format yyyy-mm-dd để gửi API
+        dateInput: '', // Hiển thị dd/mm/yyyy cho admin nhập
         seatsTotal: 20,
     });
     const [message, setMessage] = useState('');
@@ -79,6 +80,29 @@ const AdminPage = () => {
             setScheduleForm((prev) => ({ ...prev, tourId: tours[0].id }));
         }
     }, [tours, scheduleForm.tourId]);
+
+    const parseDateInput = (value) => {
+        // Hỗ trợ dd/mm/yyyy
+        const parts = value.split('/');
+        if (parts.length === 3) {
+            const [day, month, year] = parts.map((p) => p.trim());
+            if (day.length === 2 && month.length === 2 && year.length >= 2) {
+                const fullYear = year.length === 2 ? `20${year}` : year;
+                const iso = `${fullYear}-${month}-${day}`;
+                const d = new Date(iso);
+                if (!Number.isNaN(d.getTime())) return iso;
+            }
+        }
+        // Fallback: nếu người dùng dán yyyy-mm-dd thì giữ nguyên khi hợp lệ
+        const d = new Date(value);
+        if (!Number.isNaN(d.getTime())) {
+            const yyyy = d.getFullYear();
+            const mm = String(d.getMonth() + 1).padStart(2, '0');
+            const dd = String(d.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`;
+        }
+        return '';
+    };
 
     const totalRevenue = useMemo(
         () =>
@@ -281,16 +305,16 @@ const AdminPage = () => {
     const handleAddSchedule = async (e) => {
         e.preventDefault();
         try {
-            await dispatch(
-                createSchedule({
-                    tourId: scheduleForm.tourId,
-                    date: scheduleForm.date,
-                    seatsTotal: Number(scheduleForm.seatsTotal),
-                })
-            ).unwrap();
+                await dispatch(
+                    createSchedule({
+                        tourId: scheduleForm.tourId,
+                        date: scheduleForm.date,
+                        seatsTotal: Number(scheduleForm.seatsTotal),
+                    })
+                ).unwrap();
             setMessage('Đã thêm lịch khởi hành thành công!');
             toast.success('Đã thêm lịch khởi hành thành công!');
-            setScheduleForm({ ...scheduleForm, date: '', seatsTotal: 20 });
+                setScheduleForm({ ...scheduleForm, date: '', dateInput: '', seatsTotal: 20 });
             dispatch(fetchTours());
         } catch (err) {
             const errorMsg = err.message || 'Không thể thêm lịch.';
@@ -618,11 +642,19 @@ const AdminPage = () => {
                         </select>
                         <input
                             className="input-field"
-                            type="date"
-                            value={scheduleForm.date}
-                            onChange={(e) =>
-                                setScheduleForm({ ...scheduleForm, date: e.target.value })
-                            }
+                            type="text"
+                            inputMode="numeric"
+                            placeholder="dd/mm/yyyy"
+                            value={scheduleForm.dateInput}
+                            onChange={(e) => {
+                                const input = e.target.value;
+                                const iso = parseDateInput(input);
+                                setScheduleForm({
+                                    ...scheduleForm,
+                                    dateInput: input,
+                                    date: iso,
+                                });
+                            }}
                             required
                         />
                         <input

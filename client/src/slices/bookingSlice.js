@@ -5,6 +5,7 @@ import {
     cancelBooking,
     updateBookingStatus,
 } from '../apis/bookingApi.js';
+import { logout } from './authSlice.js';
 
 const initialState = {
     bookings: [],
@@ -18,6 +19,11 @@ export const bookingSlice = createSlice({
     initialState,
     reducers: {
         clearError: (state) => {
+            state.isError = false;
+            state.errorMessage = '';
+        },
+        clearBookings: (state) => {
+            state.bookings = [];
             state.isError = false;
             state.errorMessage = '';
         },
@@ -61,10 +67,16 @@ export const bookingSlice = createSlice({
                 if (index !== -1) {
                     state.bookings[index] = action.payload;
                 }
+            })
+            // Clear bookings khi user logout
+            .addCase(logout, (state) => {
+                state.bookings = [];
+                state.isError = false;
+                state.errorMessage = '';
             });
     },
 });
 
-export const { clearError } = bookingSlice.actions;
+export const { clearError, clearBookings } = bookingSlice.actions;
 export default bookingSlice.reducer;
 
