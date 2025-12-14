@@ -8,6 +8,7 @@ const BookingForm = ({ tour, onSuccess }) => {
   const { user } = useSelector((state) => state.auth);
   const { isLoading } = useSelector((state) => state.booking);
   const [message, setMessage] = useState('');
+  const [errors, setErrors] = useState({});
 
   // Format date to dd/mm/yy
   const formatDate = (value) => {
@@ -67,11 +68,59 @@ const BookingForm = ({ tour, onSuccess }) => {
 
   const handleChange = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
+    // Clear error when user starts typing
+    if (errors[key]) {
+      setErrors((prev) => ({ ...prev, [key]: '' }));
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!form.scheduleId) {
+      newErrors.scheduleId = 'Vui lòng chọn lịch khởi hành';
+    }
+    
+    if (!form.travelers || Number(form.travelers) < 1) {
+      newErrors.travelers = 'Vui lòng nhập số lượng khách (ít nhất 1 người)';
+    } else if (Number(form.travelers) > 40) {
+      newErrors.travelers = 'Số lượng khách không được vượt quá 40 người';
+    }
+    
+    if (!form.fullName || form.fullName.trim() === '') {
+      newErrors.fullName = 'Vui lòng nhập họ tên';
+    }
+    
+    if (!form.email || form.email.trim() === '') {
+      newErrors.email = 'Vui lòng nhập email';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+      newErrors.email = 'Email không hợp lệ';
+    }
+    
+    if (!form.phone || form.phone.trim() === '') {
+      newErrors.phone = 'Vui lòng nhập số điện thoại';
+    } else if (!/^[0-9]{10,11}$/.test(form.phone.replace(/\s/g, ''))) {
+      newErrors.phone = 'Số điện thoại phải có 10-11 chữ số';
+    }
+    
+    setErrors(newErrors);
+    return { isValid: Object.keys(newErrors).length === 0, errors: newErrors };
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
+    
+    // Validate form
+    const { isValid, errors: validationErrors } = validateForm();
+    if (!isValid) {
+      // Show first error message
+      const firstError = Object.values(validationErrors)[0];
+      if (firstError) {
+        toast.error(firstError);
+      }
+      return;
+    }
     
     // Validate IDs
     const tourId = tour?.id || tour?._id;
@@ -87,20 +136,6 @@ const BookingForm = ({ tour, onSuccess }) => {
     
     if (!userId) {
       const errorMsg = 'Bạn chưa đăng nhập. Vui lòng đăng nhập lại.';
-      setMessage(errorMsg);
-      toast.error(errorMsg);
-      return;
-    }
-    
-    if (!scheduleId) {
-      const errorMsg = 'Vui lòng chọn lịch khởi hành.';
-      setMessage(errorMsg);
-      toast.error(errorMsg);
-      return;
-    }
-    
-    if (!form.fullName || !form.email || !form.phone) {
-      const errorMsg = 'Vui lòng điền đầy đủ thông tin liên hệ.';
       setMessage(errorMsg);
       toast.error(errorMsg);
       return;
@@ -142,7 +177,7 @@ const BookingForm = ({ tour, onSuccess }) => {
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            Lịch khởi hành
+            Lịch khởi hành <span className="text-red-500">*</span>
           </label>
           {validSchedules.length === 0 ? (
             <div className="input-field bg-gray-50 text-gray-500 cursor-not-allowed">
@@ -151,67 +186,103 @@ const BookingForm = ({ tour, onSuccess }) => {
                 : 'Chưa có lịch khởi hành cho tour này'}
             </div>
           ) : (
-            <select
-              className="input-field"
-              value={form.scheduleId}
-              onChange={(e) => handleChange('scheduleId', e.target.value)}
-              required
-            >
-              <option value="">-- Chọn lịch khởi hành --</option>
-              {validSchedules.map((schedule) => {
-                const scheduleId = schedule.id || schedule._id;
-                return (
-                  <option key={scheduleId} value={scheduleId}>
-                    {formatDate(schedule.date)} • Còn {schedule.seatsAvailable} chỗ
-                  </option>
-                );
-              })}
-            </select>
+            <>
+              <select
+                className={`input-field ${errors.scheduleId ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                value={form.scheduleId}
+                onChange={(e) => handleChange('scheduleId', e.target.value)}
+              >
+                <option value="">-- Chọn lịch khởi hành --</option>
+                {validSchedules.map((schedule) => {
+                  const scheduleId = schedule.id || schedule._id;
+                  return (
+                    <option key={scheduleId} value={scheduleId}>
+                      {formatDate(schedule.date)} • Còn {schedule.seatsAvailable} chỗ
+                    </option>
+                  );
+                })}
+              </select>
+              {errors.scheduleId && (
+                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                  <span>⚠</span>
+                  {errors.scheduleId}
+                </p>
+              )}
+            </>
           )}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Số khách</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Số khách <span className="text-red-500">*</span>
+          </label>
           <input
-            className="input-field"
+            className={`input-field ${errors.travelers ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
             type="number"
             min="1"
             max="40"
             value={form.travelers}
             onChange={(e) => handleChange('travelers', e.target.value)}
-            required
           />
+          {errors.travelers && (
+            <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+              <span>⚠</span>
+              {errors.travelers}
+            </p>
+          )}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Họ tên</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Họ tên <span className="text-red-500">*</span>
+          </label>
           <input
-            className="input-field"
+            className={`input-field ${errors.fullName ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
             value={form.fullName}
             onChange={(e) => handleChange('fullName', e.target.value)}
-            required
           />
+          {errors.fullName && (
+            <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+              <span>⚠</span>
+              {errors.fullName}
+            </p>
+          )}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Email <span className="text-red-500">*</span>
+          </label>
           <input
-            className="input-field"
+            className={`input-field ${errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
             type="email"
             value={form.email}
             onChange={(e) => handleChange('email', e.target.value)}
-            required
           />
+          {errors.email && (
+            <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+              <span>⚠</span>
+              {errors.email}
+            </p>
+          )}
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Số điện thoại <span className="text-red-500">*</span>
+          </label>
           <input
-            className="input-field"
+            className={`input-field ${errors.phone ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
             value={form.phone}
             onChange={(e) => handleChange('phone', e.target.value)}
-            required
           />
+          {errors.phone && (
+            <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+              <span>⚠</span>
+              {errors.phone}
+            </p>
+          )}
         </div>
         <button
           className="btn-primary w-full"
-          disabled={isLoading || validSchedules.length === 0 || !form.scheduleId}>
+          type="submit"
+          disabled={isLoading || validSchedules.length === 0}>
           {isLoading ? 'Đang giữ chỗ...' : 'Đặt tour'}
         </button>
       </div>

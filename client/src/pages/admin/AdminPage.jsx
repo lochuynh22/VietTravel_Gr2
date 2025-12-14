@@ -6,7 +6,7 @@ import {
     fetchBookings,
     updateBookingStatus,
 } from '../../apis/bookingApi.js';
-import { createSchedule } from '../../apis/scheduleApi.js';
+import { fetchSchedules, createSchedule, updateSchedule, deleteSchedule } from '../../apis/scheduleApi.js';
 import { createTour, deleteTour, fetchTours, updateTour } from '../../apis/tourApi.js';
 import { fetchReportSummary, fetchTopTours } from '../../apis/reportApi.js';
 
@@ -16,6 +16,7 @@ const AdminPage = () => {
     const { tours } = useSelector((state) => state.tour);
     const { bookings } = useSelector((state) => state.booking);
     const { summary: reports, topTours } = useSelector((state) => state.report);
+    const { schedules } = useSelector((state) => state.schedule);
     const [period, setPeriod] = useState('monthly');
     const [tourForm, setTourForm] = useState({
         name: '',
@@ -46,12 +47,17 @@ const AdminPage = () => {
     const [message, setMessage] = useState('');
     const [isEditMode, setIsEditMode] = useState(false);
     const [editingTour, setEditingTour] = useState(null);
+    const [isEditScheduleMode, setIsEditScheduleMode] = useState(false);
+    const [editingSchedule, setEditingSchedule] = useState(null);
+    const [tourErrors, setTourErrors] = useState({});
+    const [scheduleErrors, setScheduleErrors] = useState({});
     const isAdmin = user?.role === 'admin';
 
     const loadDashboard = useCallback(async () => {
         await Promise.all([
             dispatch(fetchTours()),
             dispatch(fetchBookings()),
+            dispatch(fetchSchedules()),
         ]);
     }, [dispatch]);
 
@@ -228,10 +234,70 @@ const AdminPage = () => {
         setNewImage('');
         setNewHighlight('');
         setItineraryDay({ day: 1, title: '', description: '' });
+        setTourErrors({});
+    };
+
+    const validateTourForm = () => {
+        const newErrors = {};
+        
+        if (!tourForm.name || tourForm.name.trim() === '') {
+            newErrors.name = 'Vui lòng nhập tên tour';
+        }
+        
+        if (!tourForm.destination || tourForm.destination.trim() === '') {
+            newErrors.destination = 'Vui lòng nhập điểm đến';
+        }
+        
+        if (!tourForm.price || Number(tourForm.price) <= 0) {
+            newErrors.price = 'Vui lòng nhập giá gốc (phải lớn hơn 0)';
+        }
+        
+        setTourErrors(newErrors);
+        return { isValid: Object.keys(newErrors).length === 0, errors: newErrors };
+    };
+
+    const validateScheduleForm = () => {
+        const newErrors = {};
+        
+        if (!scheduleForm.tourId || scheduleForm.tourId === '') {
+            newErrors.tourId = 'Vui lòng chọn tour';
+        }
+        
+        if (!scheduleForm.date || scheduleForm.date === '') {
+            newErrors.date = 'Vui lòng nhập ngày khởi hành';
+        } else {
+            const scheduleDate = new Date(scheduleForm.date);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            scheduleDate.setHours(0, 0, 0, 0);
+            if (scheduleDate < today) {
+                newErrors.date = 'Ngày khởi hành phải là ngày trong tương lai';
+            }
+        }
+        
+        if (!scheduleForm.seatsTotal || Number(scheduleForm.seatsTotal) < 10) {
+            newErrors.seatsTotal = 'Số ghế phải ít nhất 10';
+        } else if (Number(scheduleForm.seatsTotal) > 100) {
+            newErrors.seatsTotal = 'Số ghế không được vượt quá 100';
+        }
+        
+        setScheduleErrors(newErrors);
+        return { isValid: Object.keys(newErrors).length === 0, errors: newErrors };
     };
 
     const handleCreateTour = async (e) => {
         e.preventDefault();
+        
+        // Validate form
+        const { isValid, errors: validationErrors } = validateTourForm();
+        if (!isValid) {
+            const firstError = Object.values(validationErrors)[0];
+            if (firstError) {
+                toast.error(firstError);
+            }
+            return;
+        }
+        
         try {
             const tourData = {
                 name: tourForm.name,
@@ -279,6 +345,7 @@ const AdminPage = () => {
                 setNewImage('');
                 setNewHighlight('');
                 setItineraryDay({ day: 1, title: '', description: '' });
+                setTourErrors({});
             }
             dispatch(fetchTours());
         } catch (err) {
@@ -304,7 +371,32 @@ const AdminPage = () => {
 
     const handleAddSchedule = async (e) => {
         e.preventDefault();
+        
+        // Validate form
+        const { isValid, errors: validationErrors } = validateScheduleForm();
+        if (!isValid) {
+            const firstError = Object.values(validationErrors)[0];
+            if (firstError) {
+                toast.error(firstError);
+            }
+            return;
+        }
+        
         try {
+            if (isEditScheduleMode && editingSchedule) {
+                // Update schedule
+                await dispatch(
+                    updateSchedule({
+                        id: editingSchedule.id || editingSchedule._id,
+                        tourId: scheduleForm.tourId,
+                        date: scheduleForm.date,
+                        seatsTotal: Number(scheduleForm.seatsTotal),
+                    })
+                ).unwrap();
+                setMessage('Đã cập nhật lịch khởi hành thành công!');
+                toast.success('Đã cập nhật lịch khởi hành thành công!');
+            } else {
+                // Create schedule
                 await dispatch(
                     createSchedule({
                         tourId: scheduleForm.tourId,
@@ -312,15 +404,66 @@ const AdminPage = () => {
                         seatsTotal: Number(scheduleForm.seatsTotal),
                     })
                 ).unwrap();
-            setMessage('Đã thêm lịch khởi hành thành công!');
-            toast.success('Đã thêm lịch khởi hành thành công!');
-                setScheduleForm({ ...scheduleForm, date: '', dateInput: '', seatsTotal: 20 });
+                setMessage('Đã thêm lịch khởi hành thành công!');
+                toast.success('Đã thêm lịch khởi hành thành công!');
+            }
+            // Reset form
+            setScheduleForm({ tourId: tours[0]?.id || '', date: '', dateInput: '', seatsTotal: 20 });
+            setIsEditScheduleMode(false);
+            setEditingSchedule(null);
+            setScheduleErrors({});
+            dispatch(fetchSchedules());
             dispatch(fetchTours());
         } catch (err) {
-            const errorMsg = err.message || 'Không thể thêm lịch.';
+            const errorMsg = err.message || (isEditScheduleMode ? 'Không thể cập nhật lịch.' : 'Không thể thêm lịch.');
             setMessage(errorMsg);
             toast.error(errorMsg);
         }
+    };
+
+    const handleEditSchedule = (schedule) => {
+        const scheduleDate = new Date(schedule.date);
+        const day = String(scheduleDate.getDate()).padStart(2, '0');
+        const month = String(scheduleDate.getMonth() + 1).padStart(2, '0');
+        const year = String(scheduleDate.getFullYear()).slice(-2);
+        const dateInput = `${day}/${month}/${year}`;
+        
+        // Get tourId - handle both populated and non-populated cases
+        let tourId = schedule.tourId;
+        if (typeof tourId === 'object' && tourId !== null) {
+            tourId = tourId._id || tourId.id;
+        }
+        
+        setScheduleForm({
+            tourId: tourId || '',
+            date: schedule.date,
+            dateInput,
+            seatsTotal: schedule.seatsTotal,
+        });
+        setIsEditScheduleMode(true);
+        setEditingSchedule(schedule);
+    };
+
+    const handleDeleteSchedule = async (id) => {
+        if (!window.confirm('Bạn có chắc muốn xóa lịch khởi hành này?')) return;
+        try {
+            await dispatch(deleteSchedule(id)).unwrap();
+            setMessage('Đã xóa lịch khởi hành thành công!');
+            toast.success('Đã xóa lịch khởi hành thành công!');
+            dispatch(fetchSchedules());
+            dispatch(fetchTours());
+        } catch (err) {
+            const errorMsg = err.message || 'Không thể xóa lịch.';
+            setMessage(errorMsg);
+            toast.error(errorMsg);
+        }
+    };
+
+    const handleCancelScheduleEdit = () => {
+        setScheduleForm({ tourId: tours[0]?.id || '', date: '', dateInput: '', seatsTotal: 20 });
+        setIsEditScheduleMode(false);
+        setEditingSchedule(null);
+        setScheduleErrors({});
     };
 
     const handleBookingStatus = async (bookingId, status) => {
@@ -368,22 +511,44 @@ const AdminPage = () => {
                         )}
                     </h3>
                     <form className="space-y-4" onSubmit={handleCreateTour}>
-                        <input
-                            className="input-field"
-                            placeholder="Tên tour *"
-                            value={tourForm.name}
-                            onChange={(e) => setTourForm({ ...tourForm, name: e.target.value })}
-                            required
-                        />
-                        <input
-                            className="input-field"
-                            placeholder="Điểm đến *"
-                            value={tourForm.destination}
-                            onChange={(e) =>
-                                setTourForm({ ...tourForm, destination: e.target.value })
-                            }
-                            required
-                        />
+                        <div>
+                            <input
+                                className={`input-field ${tourErrors.name ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                                placeholder="Tên tour *"
+                                value={tourForm.name}
+                                onChange={(e) => {
+                                    setTourForm({ ...tourForm, name: e.target.value });
+                                    if (tourErrors.name) {
+                                        setTourErrors((prev) => ({ ...prev, name: '' }));
+                                    }
+                                }}
+                            />
+                            {tourErrors.name && (
+                                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                                    <span>⚠</span>
+                                    {tourErrors.name}
+                                </p>
+                            )}
+                        </div>
+                        <div>
+                            <input
+                                className={`input-field ${tourErrors.destination ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                                placeholder="Điểm đến *"
+                                value={tourForm.destination}
+                                onChange={(e) => {
+                                    setTourForm({ ...tourForm, destination: e.target.value });
+                                    if (tourErrors.destination) {
+                                        setTourErrors((prev) => ({ ...prev, destination: '' }));
+                                    }
+                                }}
+                            />
+                            {tourErrors.destination && (
+                                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                                    <span>⚠</span>
+                                    {tourErrors.destination}
+                                </p>
+                            )}
+                        </div>
                         <input
                             className="input-field"
                             placeholder="Khu vực"
@@ -393,16 +558,26 @@ const AdminPage = () => {
                             }
                         />
                         <div className="grid grid-cols-2 gap-4">
-                            <input
-                                className="input-field"
-                                placeholder="Giá gốc *"
-                                type="number"
-                                value={tourForm.price}
-                                onChange={(e) =>
-                                    setTourForm({ ...tourForm, price: e.target.value })
-                                }
-                                required
-                            />
+                            <div>
+                                <input
+                                    className={`input-field ${tourErrors.price ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                                    placeholder="Giá gốc *"
+                                    type="number"
+                                    value={tourForm.price}
+                                    onChange={(e) => {
+                                        setTourForm({ ...tourForm, price: e.target.value });
+                                        if (tourErrors.price) {
+                                            setTourErrors((prev) => ({ ...prev, price: '' }));
+                                        }
+                                    }}
+                                />
+                                {tourErrors.price && (
+                                    <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                                        <span>⚠</span>
+                                        {tourErrors.price}
+                                    </p>
+                                )}
+                            </div>
                             <input
                                 className="input-field"
                                 placeholder="Giá khuyến mãi"
@@ -626,50 +801,158 @@ const AdminPage = () => {
                 </div>
 
                 <div className="card">
-                    <h3 className="text-2xl font-bold mb-6">Lịch khởi hành</h3>
+                    <h3 className="text-2xl font-bold mb-6">
+                        {isEditScheduleMode ? 'Sửa lịch khởi hành' : 'Thêm lịch khởi hành'}
+                    </h3>
                     <form className="space-y-4" onSubmit={handleAddSchedule}>
-                        <select
-                            className="input-field"
-                            value={scheduleForm.tourId}
-                            onChange={(e) =>
-                                setScheduleForm({ ...scheduleForm, tourId: e.target.value })
-                            }>
-                            {tours.map((tour) => (
-                                <option key={tour.id} value={tour.id}>
-                                    {tour.name}
-                                </option>
-                            ))}
-                        </select>
-                        <input
-                            className="input-field"
-                            type="text"
-                            inputMode="numeric"
-                            placeholder="dd/mm/yyyy"
-                            value={scheduleForm.dateInput}
-                            onChange={(e) => {
-                                const input = e.target.value;
-                                const iso = parseDateInput(input);
-                                setScheduleForm({
-                                    ...scheduleForm,
-                                    dateInput: input,
-                                    date: iso,
-                                });
-                            }}
-                            required
-                        />
-                        <input
-                            className="input-field"
-                            type="number"
-                            min="10"
-                            placeholder="Số ghế"
-                            value={scheduleForm.seatsTotal}
-                            onChange={(e) =>
-                                setScheduleForm({ ...scheduleForm, seatsTotal: e.target.value })
-                            }
-                            required
-                        />
-                        <button className="btn-secondary w-full" type="submit">Thêm lịch</button>
+                        <div>
+                            <select
+                                className={`input-field ${scheduleErrors.tourId ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                                value={scheduleForm.tourId}
+                                onChange={(e) => {
+                                    setScheduleForm({ ...scheduleForm, tourId: e.target.value });
+                                    if (scheduleErrors.tourId) {
+                                        setScheduleErrors((prev) => ({ ...prev, tourId: '' }));
+                                    }
+                                }}
+                                disabled={isEditScheduleMode}>
+                                <option value="">-- Chọn tour --</option>
+                                {tours.map((tour) => (
+                                    <option key={tour.id} value={tour.id}>
+                                        {tour.name}
+                                    </option>
+                                ))}
+                            </select>
+                            {scheduleErrors.tourId && (
+                                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                                    <span>⚠</span>
+                                    {scheduleErrors.tourId}
+                                </p>
+                            )}
+                        </div>
+                        <div>
+                            <input
+                                className={`input-field ${scheduleErrors.date ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                                type="text"
+                                inputMode="numeric"
+                                placeholder="dd/mm/yyyy *"
+                                value={scheduleForm.dateInput}
+                                onChange={(e) => {
+                                    const input = e.target.value;
+                                    const iso = parseDateInput(input);
+                                    setScheduleForm({
+                                        ...scheduleForm,
+                                        dateInput: input,
+                                        date: iso,
+                                    });
+                                    if (scheduleErrors.date) {
+                                        setScheduleErrors((prev) => ({ ...prev, date: '' }));
+                                    }
+                                }}
+                            />
+                            {scheduleErrors.date && (
+                                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                                    <span>⚠</span>
+                                    {scheduleErrors.date}
+                                </p>
+                            )}
+                        </div>
+                        <div>
+                            <input
+                                className={`input-field ${scheduleErrors.seatsTotal ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''}`}
+                                type="number"
+                                min="10"
+                                placeholder="Số ghế *"
+                                value={scheduleForm.seatsTotal}
+                                onChange={(e) => {
+                                    setScheduleForm({ ...scheduleForm, seatsTotal: e.target.value });
+                                    if (scheduleErrors.seatsTotal) {
+                                        setScheduleErrors((prev) => ({ ...prev, seatsTotal: '' }));
+                                    }
+                                }}
+                            />
+                            {scheduleErrors.seatsTotal && (
+                                <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                                    <span>⚠</span>
+                                    {scheduleErrors.seatsTotal}
+                                </p>
+                            )}
+                        </div>
+                        <div className="flex gap-2">
+                            <button className="btn-secondary flex-1" type="submit">
+                                {isEditScheduleMode ? 'Cập nhật' : 'Thêm lịch'}
+                            </button>
+                            {isEditScheduleMode && (
+                                <button
+                                    className="btn-ghost"
+                                    type="button"
+                                    onClick={handleCancelScheduleEdit}>
+                                    Hủy
+                                </button>
+                            )}
+                        </div>
                     </form>
+                </div>
+
+                <div className="card">
+                    <h3 className="text-2xl font-bold mb-6">Danh sách lịch khởi hành</h3>
+                    <div className="overflow-x-auto">
+                        <table className="w-full">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Tour</th>
+                                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Ngày khởi hành</th>
+                                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Tổng ghế</th>
+                                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Ghế trống</th>
+                                    <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200">
+                                {schedules.length === 0 ? (
+                                    <tr>
+                                        <td colSpan="5" className="px-4 py-8 text-center text-gray-500">
+                                            Chưa có lịch khởi hành nào
+                                        </td>
+                                    </tr>
+                                ) : (
+                                    schedules.map((schedule) => {
+                                        const scheduleDate = new Date(schedule.date);
+                                        const formattedDate = scheduleDate.toLocaleDateString('vi-VN', {
+                                            day: '2-digit',
+                                            month: '2-digit',
+                                            year: 'numeric',
+                                        });
+                                        const tour = tours.find((t) => t.id === schedule.tourId?._id || t.id === schedule.tourId || t._id === schedule.tourId?._id || t._id === schedule.tourId);
+                                        
+                                        return (
+                                            <tr key={schedule.id || schedule._id} className="hover:bg-gray-50">
+                                                <td className="px-4 py-3 text-sm">{tour?.name || 'N/A'}</td>
+                                                <td className="px-4 py-3 text-sm">{formattedDate}</td>
+                                                <td className="px-4 py-3 text-sm">{schedule.seatsTotal}</td>
+                                                <td className="px-4 py-3 text-sm font-medium">
+                                                    {schedule.seatsAvailable !== undefined ? schedule.seatsAvailable : schedule.seatsTotal}
+                                                </td>
+                                                <td className="px-4 py-3">
+                                                    <div className="flex gap-2">
+                                                        <button
+                                                            className="btn-ghost text-sm text-blue-600 hover:text-blue-700"
+                                                            onClick={() => handleEditSchedule(schedule)}>
+                                                            Sửa
+                                                        </button>
+                                                        <button
+                                                            className="btn-ghost text-sm text-red-600 hover:text-red-700"
+                                                            onClick={() => handleDeleteSchedule(schedule.id || schedule._id)}>
+                                                            Xóa
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 

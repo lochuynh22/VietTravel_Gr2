@@ -46,7 +46,7 @@ export const login = async (req, res) => {
         if (!user) {
             return res.status(401).json({
                 ER: 1,
-                EM: 'Tài khoản hoặc mật khẩu không chính xác1',
+                EM: 'Tài khoản hoặc mật khẩu không chính xác',
             });
         }
 
@@ -55,7 +55,7 @@ export const login = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(401).json({
                 ER: 1,
-                EM: 'Tài khoản hoặc mật khẩu không chính xác2',
+                EM: 'Tài khoản hoặc mật khẩu không chính xác',
             });
         }
 

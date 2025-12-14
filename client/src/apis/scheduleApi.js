@@ -4,6 +4,16 @@ import axios from 'axios';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
 // Frontend chỉ gọi API - không xử lý logic
+export const fetchSchedules = createAsyncThunk(
+    'schedule/fetchSchedules',
+    async (filters = {}) => {
+        const params = new URLSearchParams();
+        if (filters.tourId) params.append('tourId', filters.tourId);
+        const { data } = await axios.get(`${API_URL}/api/schedules?${params.toString()}`);
+        return data;
+    }
+);
+
 export const createSchedule = createAsyncThunk(
     'schedule/createSchedule',
     async ({ tourId, date, seatsTotal }) => {

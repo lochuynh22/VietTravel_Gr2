@@ -84,7 +84,7 @@ export const updateSchedule = async (req, res) => {
             req.params.id,
             req.body,
             { new: true, runValidators: true }
-        );
+        ).populate('tourId', 'name');
 
         if (!schedule) {
             return res.status(404).json({
